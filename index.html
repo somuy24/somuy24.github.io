@@ -179,8 +179,8 @@
   .tag { font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); background: var(--surface-2); }
 
   /* projects */
-  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  .proj { display: flex; flex-direction: column; }
+  .projects { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; }
+  .proj { display: flex; flex-direction: column; grid-column: span 2; }
   .proj.wide { grid-column: 1 / -1; }
   .proj-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
   .kicker { font-size: 12.5px; color: var(--accent); }
@@ -188,7 +188,9 @@
   .proj h3 { font-family: "Space Grotesk", sans-serif; font-size: 22px; letter-spacing: -.02em; margin: 0 0 10px; }
   .proj p { color: var(--muted); margin: 0 0 16px; font-size: 15.5px; }
   .proj .tags { margin-top: auto; }
-  .flow { display: grid; grid-template-columns: 1fr auto 1.6fr auto 1fr; align-items: center; gap: 12px; margin: 6px 0 20px; }
+  .flow { display: flex; align-items: center; gap: 12px; margin: 6px 0 20px; }
+  .flow .node { flex: 1 1 0; }
+  .flow .node.big { flex: 1.7 1 0; }
   .node { border: 1px dashed color-mix(in srgb, var(--accent) 50%, var(--border)); border-radius: 12px; padding: 12px 14px; text-align: center; font-size: 14px; background: var(--surface-2); }
   .node b { display: block; font-size: 14.5px; margin-bottom: 4px; }
   .node .sig { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 6px; }
@@ -231,9 +233,10 @@
     .term { transform: none; }
     .stats { grid-template-columns: repeat(2, 1fr); }
     .projects { grid-template-columns: 1fr; }
+    .proj { grid-column: 1 / -1; }
     .skills { grid-template-columns: repeat(2, 1fr); }
-    .flow { grid-template-columns: 1fr; }
-    .arrow { transform: rotate(90deg); justify-self: center; }
+    .flow { flex-direction: column; align-items: stretch; }
+    .arrow { transform: rotate(90deg); align-self: center; }
   }
   @media (max-width: 760px) {
     .menu-btn { display: grid; }
@@ -398,18 +401,41 @@
       </div>
       <div class="projects">
         <article class="card proj wide reveal">
+          <div class="proj-top"><span class="kicker mono">Remitly &middot; UAE launch</span><span class="award">Built from scratch</span></div>
+          <h3>Regulatory reporting service</h3>
+          <p>Under its UAE licence, Remitly must report every remittance to the Central Bank each day in a strict, regulator-defined format, and there was no service for it. I created one and built its core: a country-agnostic microservice that consumes transaction events, enriches each one with customer, identity, recipient and payment data from upstream services, validates it against the regulator's spec and stores it for the daily file. Every step is idempotent and retry-safe, so a replayed or duplicate event never produces a wrong report row, and a lookup cache I added skips 80% of upstream calls in production.</p>
+          <div class="flow" aria-label="Reporting flow: transaction events, enrichment, validation, daily report">
+            <div class="node"><b>Transaction events</b>SQS, at-least-once</div>
+            <div class="arrow" aria-hidden="true">&rarr;</div>
+            <div class="node big"><b>Enrich</b>upstream lookups, 80% served from cache
+              <div class="sig"><span>customer</span><span>identity</span><span>recipient</span><span>payment instrument</span></div></div>
+            <div class="arrow" aria-hidden="true">&rarr;</div>
+            <div class="node"><b>Validate</b>against the regulator's spec</div>
+            <div class="arrow" aria-hidden="true">&rarr;</div>
+            <div class="node"><b>Daily report</b>to the Central Bank</div>
+          </div>
+          <div class="tags"><span class="tag">Go</span><span class="tag">AWS SQS</span><span class="tag">Event-driven</span><span class="tag">Idempotency</span><span class="tag">Microservices</span></div>
+        </article>
+        <article class="card proj wide reveal">
           <div class="proj-top"><span class="kicker mono">Cashfree Payments &middot; core payments</span></div>
           <h3>Dynamic settlement routing engine</h3>
           <p>Every settlement can go out through several banking partners, and at any moment one of them can be down, slow or short on balance. The engine scores each candidate route on live signals and sends the settlement down the best one. Settlement reliability went from 95% to 99%.</p>
           <div class="flow" aria-label="Routing flow: settlement request, router scoring signals, best bank route">
             <div class="node"><b>Settlement request</b>merchant payout</div>
             <div class="arrow" aria-hidden="true">&rarr;</div>
-            <div class="node"><b>Router</b>scores every candidate route
+            <div class="node big"><b>Router</b>scores every candidate route
               <div class="sig"><span>bank uptime</span><span>escrow balance</span><span>bank mapping</span><span>amount</span><span>time of day</span></div></div>
             <div class="arrow" aria-hidden="true">&rarr;</div>
             <div class="node"><b>Best bank route</b>95% &rarr; 99% success</div>
           </div>
           <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Redis</span><span class="tag">Distributed systems</span></div>
+        </article>
+
+        <article class="card proj reveal">
+          <div class="proj-top"><span class="kicker mono">Cashfree Payments &middot; automation</span><span class="award">GEM award</span></div>
+          <h3>Normal settlement automation</h3>
+          <p>Normal settlements were the last settlement type still run by hand. I automated the flow end to end, cutting the manual workload by 50% and raising on-time (within-SLA) success by 37%. The work won Cashfree's GEM (Going the Extra Mile) award.</p>
+          <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Workflow automation</span></div>
         </article>
 
         <article class="card proj reveal">
